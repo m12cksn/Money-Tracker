@@ -4,7 +4,7 @@ import { FiMinus } from "react-icons/fi";
 import { RiDeleteBin4Line } from "react-icons/ri";
 import { FaBatteryEmpty } from "react-icons/fa";
 
-const Card = ({ transactions }) => {
+const Card = ({ transactions, addTransaction }) => {
   return (
     <div>
       {transactions.length > 1 ? (
