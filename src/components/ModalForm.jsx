@@ -3,8 +3,17 @@ import { useState } from "react";
 import { BsClipboardPlus } from "react-icons/bs";
 import { FaWindowClose } from "react-icons/fa";
 
-const ModalForm = () => {
+const ModalForm = ({ addTransactions }) => {
   const [openModal, setOpenModal] = useState(false);
+
+  const initialFormState = { id: null, desc: "", amount: 0, date: "" };
+
+  const [transaction, setTransaction] = useState(initialFormState);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setTransaction({ ...transaction, [name]: value });
+  };
 
   const toogleModal = () => {
     setOpenModal(!openModal);
@@ -51,7 +60,16 @@ const ModalForm = () => {
               </button>
             </div>
             {/* <!-- Modal body --> */}
-            <form className="p-4 md:p-5">
+            <form
+              onSubmit={(event) => {
+                event.preventDefault();
+                if (!transaction) return;
+
+                addTransactions(transaction);
+                setTransaction(initialFormState);
+              }}
+              className="p-4 md:p-5"
+            >
               <div className="grid gap-4 mb-4 grid-cols-2">
                 <div className="col-span-2">
                   <label
@@ -62,7 +80,9 @@ const ModalForm = () => {
                   </label>
                   <input
                     type="text"
-                    name="name"
+                    onChange={handleChange}
+                    value={transaction.desc}
+                    name="desc"
                     id="name"
                     className=" text-sm  block w-full p-2.5 shadow outline-none "
                     placeholder="Type product name"
@@ -78,7 +98,9 @@ const ModalForm = () => {
                   </label>
                   <input
                     type="number"
-                    name="price"
+                    value={transaction.amount}
+                    onChange={handleChange}
+                    name="amount"
                     id="price"
                     className=" text-sm  focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  "
                     placeholder="$2999"
@@ -93,8 +115,11 @@ const ModalForm = () => {
                     Status
                   </label>
                   <select
+                    name="status"
                     id="category"
-                    className=" text-sm  outline-none p-2.5 "
+                    onChange={handleChange}
+                    value={transaction.status}
+                    className=" text-sm w-full outline-none p-2.5 "
                   >
                     <option selected="">Select category</option>
                     <option value="TV">Income</option>
@@ -106,14 +131,18 @@ const ModalForm = () => {
                     htmlFor="description"
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   >
-                    Product Description
+                    Date
                   </label>
-                  <textarea
-                    id="description"
-                    rows="4"
-                    className="block p-2.5 w-full text-sm outline-none  "
-                    placeholder="Write product description here"
-                  ></textarea>
+                  <input
+                    className="p-2 w-full outline-none"
+                    type="date"
+                    onChange={handleChange}
+                    id="date"
+                    name="date"
+                    value={transaction.date}
+                    min="2010-01-01"
+                    max="2030-01-01"
+                  />
                 </div>
               </div>
               <button
