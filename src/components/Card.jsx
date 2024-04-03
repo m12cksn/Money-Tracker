@@ -4,10 +4,10 @@ import { FiMinus } from "react-icons/fi";
 import { RiDeleteBin4Line } from "react-icons/ri";
 import { FaBatteryEmpty } from "react-icons/fa";
 
-const Card = ({ transactions, addTransaction }) => {
+const Card = ({ transactions, formatToRupiah, deleteTransactions }) => {
   return (
-    <div>
-      {transactions.length > 1 ? (
+    <div className="bg-black ">
+      {transactions.length > 0 ? (
         transactions.map((transaction, index) => (
           <div
             key={index}
@@ -24,10 +24,21 @@ const Card = ({ transactions, addTransaction }) => {
                 <h1 className="text-lg font-semibold text-slate-900 ">
                   {transaction.desc}
                 </h1>
-                <p className="text-xs ">{transaction.date}</p>
+                <p className="text-xs text-slate-500 ">{transaction.date}</p>
               </div>
             </div>
-            <RiDeleteBin4Line className="text-white  bg-red-400 p-1 rounded-full  text-2xl w-8 h-8" />
+            <h1
+              className={`${
+                transaction.status === "income"
+                  ? "text-xl text-green-400 font-semibold"
+                  : "text-xl font-semibold text-red-400"
+              }`}
+            >
+              {formatToRupiah(transaction.amount)}
+            </h1>
+            <button onClick={() => deleteTransactions(transaction.id)}>
+              <RiDeleteBin4Line className="text-white  bg-red-400 p-1 rounded-full  text-2xl w-8 h-8" />
+            </button>
           </div>
         ))
       ) : (

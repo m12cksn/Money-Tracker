@@ -121,9 +121,9 @@ const ModalForm = ({ addTransactions }) => {
                     value={transaction.status}
                     className=" text-sm w-full outline-none p-2.5 "
                   >
-                    <option selected="">Select category</option>
-                    <option value="TV">Income</option>
-                    <option value="PC">Expense</option>
+                    <option value="">Select category</option>
+                    <option value="income">Income</option>
+                    <option value="expense">Expense</option>
                   </select>
                 </div>
                 <div className="col-span-2">

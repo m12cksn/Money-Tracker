@@ -7,13 +7,6 @@ import IncomeExpense from "./components/IncomeExpense";
 import Balance from "./components/Balance";
 
 function App() {
-  const formatToRupiah = (amount) => {
-    return new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
-    }).format(amount);
-  };
-
   const dataTransaction = [
     {
       id: 1,
@@ -30,6 +23,15 @@ function App() {
       date: "2024-03-15",
     },
   ];
+  const [transactions, setTransactions] = useState(dataTransaction);
+  // console.log(transactions, "ini transaction");
+
+  const formatToRupiah = (amount) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+    }).format(amount);
+  };
 
   const IncomeExpenseData = [
     {
@@ -48,21 +50,42 @@ function App() {
     },
   ];
 
+  const totalIncome = transactions
+    .filter((transaction) => transaction.status === "income")
+    .reduce((acc, transaction) => acc + parseInt(transaction.amount), 0);
+
+  const totalExpense = transactions
+    .filter((transaction) => transaction.status === "expense")
+    .reduce((acc, transaction) => acc + parseInt(transaction.amount), 0);
+
+  const balance = totalIncome - totalExpense;
+
+  console.log(balance);
+
+  const deleteTransactions = (id) => {
+    // console.log(id, "ini id");
+    setTransactions(
+      transactions.filter((transaction) => transaction.id !== id)
+    );
+    console.log(transactions, "total transaction");
+  };
+
   // const [isOpen, setIsOpen] = useState(false);
-  const [transactions, setTransactions] = useState(dataTransaction);
 
   const addTransactions = (transaction) => {
-    transaction.id = transaction.length + 1;
+    transaction.id = transactions.length + 1;
     setTransactions([...transactions, transaction]);
   };
 
   return (
     <div className="bg-blue-950 w-full h-screen ">
       <div className="max-w-md bg-gradient-to-t mx-auto pt-20 pb-3 from-blue-800 via-sky-800 to-blue-800 ">
-        <Balance formatToRupiah={formatToRupiah} />
+        <Balance formatToRupiah={formatToRupiah} balance={balance} />
         <IncomeExpense
-          IncomeExpenseData={IncomeExpenseData}
+          transactions={transactions}
           formatToRupiah={formatToRupiah}
+          totalExpense={totalExpense}
+          totalIncome={totalIncome}
         />
         <div className="flex justify-evenly mt-12">
           <button className="w-28 hover:bg-slate-300 transition-all ease-in-out duration-200 upp rounded-sm font-semibold py-2 bg-white">
@@ -77,14 +100,18 @@ function App() {
         </div>
       </div>
       <div className="max-w-md bg-gradient-to-t mx-auto  from-blue-800 via-sky-800 to-blue-800">
-        <div className="bg-slate-700 pt-5 h-96 mx-auto px-5 rounded-t-3xl">
+        <div className="bg-slate-700 overflow-y-scroll pt-5 h-96 mx-auto px-5 rounded-t-3xl">
           <div className="flex items-center  justify-between">
             <h1 className=" text-xl text-slate-50 font-semibold">
               Transaction
             </h1>
             <ModalForm addTransactions={addTransactions} />
           </div>
-          <Card transactions={transactions} />
+          <Card
+            deleteTransactions={deleteTransactions}
+            transactions={transactions}
+            formatToRupiah={formatToRupiah}
+          />
         </div>
       </div>
     </div>
